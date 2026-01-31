@@ -28,7 +28,8 @@ steps:
   displayName: 'Test pipeline with Azure Repos'
 
   
-##3# Azure DevOps Self-Hosted Agent Setup with Service Principal ## Prerequisites - Azure subscription and resource group created - Azure DevOps organization and project (e.g., `test`) - Linux VM available for hosting the agent --- ## 
+##3# Azure DevOps Self-Hosted Agent Setup with Service Principal ## Prerequisites - Azure subscription and resource group created - Azure DevOps organization and project (e.g., `test`) - Linux VM available for hosting the agent --- 
+## 
 Step 1: Create a Service Principal in Azure
 
 appId → Client ID
@@ -39,12 +40,12 @@ tenant → Tenant ID
 
 Assign Contributor role at the Resource Group level to this Service Principal.
 
-Step 2: Create Key Vault and Assign Role
+### Step 2: Create Key Vault and Assign Role
 Create a Key Vault in the same resource group.
-
+To store passwd for newly creating vm 
 Assign the Service Principal Key Vault Secrets User or appropriate role so it can access secrets.
 
-Step 3: Create Service Connection in Azure DevOps
+### Step 3: Create Service Connection in Azure DevOps
 Go to Project Settings → Service connections → New service connection → Azure Resource Manager.
 
 Choose Service Principal (manual).
@@ -61,7 +62,8 @@ Secret (Client Secret)
 
 This allows pipelines to authenticate securely with Azure.
 
-Step 4: Create Repository for Infrastructure
+##Step 4: Create Repository for Infrastructure
+
 Create a repo named infra with Terraform files:
 
 main.tf
@@ -75,7 +77,8 @@ output.tf
 Step 5: Create Pipeline (pipeline.yaml)
 
 
-# Azure DevOps Self-Hosted Agent Setup We initially attempted to run pipelines using Microsoft‑hosted agents, but encountered a **subscription error** because the organization did not have a Pay‑As‑You‑Go Azure subscription linked. To overcome this limitation, we configured a **self‑hosted agent** on our own VM. This allows pipelines to run without depending on Microsoft‑hosted agents or subscription constraints, while giving us full control over networking, security, and installed tools. ---
+##Azure DevOps Self-Hosted Agent Setup We initially attempted to run pipelines using Microsoft‑hosted agents, but encountered a **subscription error** because the organization did not have a Pay‑As‑You‑Go Azure subscription linked. To overcome this limitation, we configured a **self‑hosted agent** on our own VM. This allows pipelines to run without depending on Microsoft‑hosted agents or subscription constraints, while giving us full control over networking, security, and installed tools. 
+---
 ## Step 6: Self-Hosted Agent Setup (Option 1: Service Principal)
 sudo apt-get update
 sudo apt-get install -y curl wget tar
