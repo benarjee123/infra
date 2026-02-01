@@ -1,3 +1,5 @@
+### This code used when we installed terraform in self host vm then we can use below code
+
 trigger:
 - main
 
