@@ -1,0 +1,61 @@
+## THis code works when we use terraform from azure devops extention
+
+trigger:
+- main
+
+pool:
+  name: 'LinuxPool'   # self-hosted agent
+
+variables:
+  terraformWorkingDir: 'infra'
+
+steps:
+- checkout: self
+
+# ----------------------------
+# Install Terraform (via extension)
+# ----------------------------
+- task: TerraformInstaller@1
+  displayName: 'Install Terraform'
+  inputs:
+    terraformVersion: '1.5.7'
+
+# ----------------------------
+# Terraform Init
+# ----------------------------
+- task: TerraformTaskV4@4
+  displayName: 'Terraform Init'
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(terraformWorkingDir)'
+    backendServiceArm: 'Azure-Testing-Connection'
+
+# ----------------------------
+# Terraform Plan
+# ----------------------------
+- task: TerraformTaskV4@4
+  displayName: 'Terraform Plan'
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(terraformWorkingDir)'
+    environmentServiceNameAzureRM: 'Azure-Testing-Connection'
+    commandOptions: >
+      -var="admin_username=azureuser"
+      -var="admin_password=$(VM_ADMIN_PASSWORD)"
+
+# ----------------------------
+# Terraform Apply
+# ----------------------------
+- task: TerraformTaskV4@4
+  displayName: 'Terraform Apply'
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(terraformWorkingDir)'
+    environmentServiceNameAzureRM: 'Azure-Testing-Connection'
+    commandOptions: >
+      -auto-approve
+      -var="admin_username=azureuser"
+      -var="admin_password=$(VM_ADMIN_PASSWORD)"
