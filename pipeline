@@ -1,4 +1,4 @@
-### This code used when we installed terraform in self host vm then we can use below code
+### This code used when we installed terraform in self host vm and secrtes in azure devops then we can use below code
 
 trigger:
 - main
