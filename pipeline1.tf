@@ -1,4 +1,6 @@
-## This code works when we want to use passwd from git secrets and terrform installed in self vm
+
+## This code works if all secrets predefined in repos file
+
 trigger:
 - main
 
@@ -7,11 +9,6 @@ pool:
 
 steps:
 - checkout: self
-
-# Optional: verify Terraform is available on self-hosted VM
-- script: |
-    terraform version
-  displayName: 'Check Terraform Version'
 
 # Terraform Init
 - task: AzureCLI@2
@@ -22,7 +19,6 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-      cd infra
       terraform init -input=false
 
 # Terraform Plan
@@ -34,10 +30,7 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-      cd infra
-      terraform plan -out=tfplan -input=false \
-        -var="admin_username=azureuser" \
-        -var="admin_password=$(VM_ADMIN_PASSWORD)"
+      terraform plan -out=tfplan -input=false
 
 # Terraform Apply
 - task: AzureCLI@2
@@ -48,5 +41,4 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-      cd infra
       terraform apply -auto-approve tfplan
